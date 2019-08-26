@@ -40,16 +40,13 @@
         app:layout_constraintTop_toTopOf="@+id/text_home"
         app:layout_constraintVertical_bias="0.856" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="153dp"
-        tools:layout_editor_absoluteY="376dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+    <TextView
+        android:id="@+id/bchAddressText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="172dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

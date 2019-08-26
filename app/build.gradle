@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -21,6 +23,10 @@ android {
         exclude 'lib/x86_64/freebsd/libscrypt.so'
         exclude 'lib/x86_64/linux/libscrypt.so'
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 }
 
 dependencies {
@@ -37,4 +43,13 @@ dependencies {
     //SLP SDK
     implementation 'com.github.Bitcoin-com:slp-wallet-sdk-android:0.4'
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+    //NovaCrypto
+    implementation 'io.github.novacrypto:BIP39:2019.01.27'
+    compile "androidx.core:core-ktx:+"
+    compile "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+repositories {
+    mavenCentral()
 }
