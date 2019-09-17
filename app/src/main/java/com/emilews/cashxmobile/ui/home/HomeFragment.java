@@ -1,6 +1,7 @@
 package com.emilews.cashxmobile.ui.home;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,24 @@ public class HomeFragment extends Fragment {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        TextView addressText = root.findViewById(R.id.bchAddressText);
-        addressText.setText(MainActivity.getMnemonic().toString());
+
+
+        Button bchSendButton = root.findViewById(R.id.bchSendButton);
+        bchSendButton.setOnClickListener(e -> {
+           MainActivity.bchPressedSend();
+        });
+
+        TextView balance = root.findViewById(R.id.bchBalanceQuantity);
+        Button bchUpdateButton = root.findViewById(R.id.bchUpdateButton);
+
+
+        bchUpdateButton.setOnClickListener(e -> {
+            MainActivity.UpdateBCH();
+            StringBuilder sb = new StringBuilder();
+            System.out.println(sb.toString());
+            balance.setText(sb.toString());
+        });
+
 
 
         homeViewModel.getText().observe(this, new Observer<String>() {
@@ -38,5 +55,7 @@ public class HomeFragment extends Fragment {
         });
         return root;
     }
+
+
 
 }

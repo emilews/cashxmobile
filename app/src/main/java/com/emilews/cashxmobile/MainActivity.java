@@ -2,22 +2,17 @@ package com.emilews.cashxmobile;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.widget.Toast;
 
-import com.bitcoin.slpwallet.Network;
-
+import com.emilews.cashxmobile.bch.Wallet;
+import com.emilews.cashxmobile.bch.WalletFactory;
 import com.emilews.cashxmobile.utils.MnemonicUtil;
+import com.emilews.cashxmobile.utils.Reader;
+import com.emilews.cashxmobile.utils.WebUtil;
+import com.emilews.cashxmobile.utils.Writer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -25,19 +20,19 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.bitcoin.slpwallet.SLPWallet;
-
 
 public class MainActivity extends AppCompatActivity {
-    private String DATAFILENAME = "store.csi";
-    private static SLPWallet wallet;
+    private static Wallet wallet;
+    private static Context context;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
         loadWallet();
+        UpdateBCH();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -50,71 +45,29 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-
     public void loadWallet(){
-        try {
-            FileInputStream fis = openFileInput(DATAFILENAME);
-            BufferedReader br = new BufferedReader(new InputStreamReader(new BufferedInputStream(fis)));
-            String line = "";
-            StringBuilder sb = new StringBuilder();
-            while((line = br.readLine()) != null){
-                sb.append(line);
-            }
-            if(sb.toString() == null){
-                createWallet();
-            }
-            br.close();
-            String[] a = sb.toString().split(",");
-            List<String> wordlist = new ArrayList<>();
-            for(String s : a){
-                wordlist.add(s);
-            }
-            wallet = SLPWallet.Companion.fromMnemonic(this, Network.MAIN, wordlist, false);
-        } catch (FileNotFoundException e) {
-            createWallet();
-        } catch (IOException e) {
-            e.printStackTrace();
+        wallet = Wallet.getInstance();
+        List<String> wordlist = Reader.readWalletSeed(context);
+        if(wordlist == null){
+            String newMnemonic = MnemonicUtil.getNewMnemonic();
+            wallet.createNewWallet(context, newMnemonic);
+        }else{
+            wallet.createWalletFromMnemonic(context, wordlist);
         }
-
-    }
-    public void createWallet(){
-        String wordlist = MnemonicUtil.getNewMnemonic();
-        wallet = SLPWallet.Companion.fromMnemonic(this, Network.MAIN, wordlist, true);
         saveWallet();
     }
 
     public void saveWallet(){
-        try{
-            FileOutputStream fos = openFileOutput(DATAFILENAME, Context.MODE_PRIVATE);
-            List<String> wordlist = wallet.getMnemonic();
-            StringBuilder sb = new StringBuilder();
-            for(int i = 0; i < wordlist.size(); i++){
-                if(i == wordlist.size()){
-                    sb.append(wordlist.get(i));
-                }else{
-                    sb.append(wordlist.get(i)+ ",");
-                }
-            }
-            fos.write(sb.toString().getBytes());
-            fos.close();
-        }catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        Writer.saveSeedToFile(context, wallet.getWalletMnemonic());
     }
-    public static List<String> getMnemonic(){
-        return wallet.getMnemonic();
-    }
-
     public static String getBchAddress(){
         return wallet.getBchAddress();
     }
-    public static Object getBalance(){
-        return wallet.getBalance();
-    }
 
+    public static void bchPressedSend(){
+        Toast.makeText(context, "Pressed send button!", Toast.LENGTH_LONG).show();
+    }
+    public static void UpdateBCH(){
+        wallet.refresh();
+    }
 }
