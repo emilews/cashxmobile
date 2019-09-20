@@ -6,6 +6,8 @@ public class Constants {
     private static final String USER_DATA_FILE_NAME = "user.csi";
     //Section for URLs only.
     private static final String SINGLE_ADRESS_URL = "https://rest.bitcoin.com/v2/address/details/";
+    private static final String TX_DETAIL_URL = "https://bch.btc.com/";
+
 
 
     public static String getSingleAdressUrl(){
@@ -19,4 +21,6 @@ public class Constants {
     public static String getUserDataFileName() {
         return USER_DATA_FILE_NAME;
     }
+
+    public static String getTxDetailUrl() { return TX_DETAIL_URL; }
 }
