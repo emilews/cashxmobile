@@ -8,7 +8,6 @@ import com.emilews.cashxmobile.utils.WebUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Wallet {
@@ -17,49 +16,46 @@ public class Wallet {
         It is in a singleton pattern.
      */
 
-    private String bch_balance = "";
-    private String slp_balance = "";
+    private double bch_balance = 0;
+    private double slp_balance_in_usd = 0;
     private String[] tx;
     private String legacy_address;
-    private String unconfirmed_balance = "";
+    private double unconfirmed_balance = 0;
 
 
-    private SLPWallet wallet;
-    private static Wallet instance;
-    private Wallet(Context context){
-        JSONObject data = WebUtil.getBCHAddressData(context, wallet.getBchAddress());
-        try {
-            tx = new String[Integer.valueOf(data.getString("txApperances"))];
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-
+    private SLPWallet SLP_WALLET;
+    private static Wallet WALLET_ADAPTER_INSTANCE;
+    private static Context SAVED_CONTEXT;
+    private Wallet(){
+        //Nothing
     }
     public static Wallet getInstance(Context context){
-        if ( instance == null){
-            instance = new Wallet(context);
+        if(SAVED_CONTEXT == null){
+            SAVED_CONTEXT = context;
         }
-        return instance;
+        if ( WALLET_ADAPTER_INSTANCE == null){
+            WALLET_ADAPTER_INSTANCE = new Wallet();
+        }
+        return WALLET_ADAPTER_INSTANCE;
     }
     public void createNewWallet(Context context, String wordlist){
-        wallet = WalletFactory.createWallet(context, wordlist, true);
+        SLP_WALLET = WalletFactory.createWallet(context, wordlist, true);
     }
     public void createWalletFromMnemonic(Context context, List<String> wordlist){
-        wallet = WalletFactory.createWallet(context, wordlist, false);
+        SLP_WALLET = WalletFactory.createWallet(context, wordlist, false);
+        refreshBch();
     }
     public List<String> getWalletMnemonic(){
-        return wallet.getMnemonic();
+        return SLP_WALLET.getMnemonic();
     }
     public String getBchAddress(){
-        return wallet.getBchAddress();
+        return SLP_WALLET.getBchAddress();
     }
     public String getSlpAddress(){
-        return wallet.getSlpAddress();
+        return SLP_WALLET.getSlpAddress();
     }
-    public void refreshBch(Context context){
-        JSONObject data = WebUtil.getBCHAddressData(context, wallet.getBchAddress());
+    public void refreshBch(){
+        String[] data = WebUtil.getBCHAddressData(SAVED_CONTEXT, SLP_WALLET.getBchAddress());
 
     }
 }

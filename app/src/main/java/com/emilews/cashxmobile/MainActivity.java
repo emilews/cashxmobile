@@ -5,10 +5,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.emilews.cashxmobile.bch.Wallet;
-import com.emilews.cashxmobile.bch.WalletFactory;
 import com.emilews.cashxmobile.utils.MnemonicUtil;
 import com.emilews.cashxmobile.utils.Reader;
-import com.emilews.cashxmobile.utils.WebUtil;
 import com.emilews.cashxmobile.utils.Writer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -46,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadWallet(){
-        wallet = Wallet.getInstance();
+        wallet = Wallet.getInstance(context);
         List<String> wordlist = Reader.readWalletSeed(context);
         if(wordlist == null){
             String newMnemonic = MnemonicUtil.getNewMnemonic();
@@ -68,6 +66,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(context, "Pressed send button!", Toast.LENGTH_LONG).show();
     }
     public static void UpdateBCH(){
-        wallet.refresh();
+        wallet.refreshBch();
     }
 }

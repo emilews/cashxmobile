@@ -48,8 +48,12 @@ dependencies {
     compile "androidx.core:core-ktx:+"
     compile "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    //Volley
-    implementation 'com.android.volley:volley:1.1.1'
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    //Retrofit Gson Converter
+    implementation 'com.squareup.retrofit2:converter-gson'
+    //Gson
+    implementation 'com.google.code.gson:gson:2.8.6'
 }
 
 repositories {
