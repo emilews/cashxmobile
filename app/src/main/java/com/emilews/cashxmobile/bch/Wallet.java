@@ -3,20 +3,28 @@ package com.emilews.cashxmobile.bch;
 import android.content.Context;
 
 import com.bitcoin.slpwallet.SLPWallet;
+import com.emilews.cashxmobile.observers.BalanceObserver;
+import com.emilews.cashxmobile.observers.CustomObserver;
 import com.emilews.cashxmobile.utils.WebUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
-public class Wallet {
-    /*
-        Here we abstract everything we can get from a request to the REST API.
-        It is in a singleton pattern.
+public class Wallet{
+    /**
+     * This class tries to abstract some things from a BCH/SLP wallet and adapts them.
      */
 
-    private double bch_balance = 0;
+
+    //Observers array
+    private static List<CustomObserver> OBSERVERS_ARRAY = new ArrayList<>();
+
+
+    private static double bch_balance = 0;
     private double slp_balance_in_usd = 0;
     private String[] tx;
     private String legacy_address;
@@ -35,6 +43,8 @@ public class Wallet {
         }
         if ( WALLET_ADAPTER_INSTANCE == null){
             WALLET_ADAPTER_INSTANCE = new Wallet();
+            BalanceObserver bo = BalanceObserver.getInstance();
+            OBSERVERS_ARRAY.add(bo);
         }
         return WALLET_ADAPTER_INSTANCE;
     }
@@ -55,7 +65,27 @@ public class Wallet {
         return SLP_WALLET.getSlpAddress();
     }
     public void refreshBch(){
-        String[] data = WebUtil.getBCHAddressData(SAVED_CONTEXT, SLP_WALLET.getBchAddress());
-
+        WebUtil.getBCHAddressData(getBchAddress());
     }
+
+    public static void setBch_balance(String nb){
+        Double balance = null;
+        try {
+            balance = Double.valueOf(nb);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        if(balance == null){
+
+        }else{
+            bch_balance = balance;
+        }
+        for(CustomObserver o : OBSERVERS_ARRAY){
+            o.notifyBchBalanceChange();
+        }
+    }
+    public String getBchBalance(){
+        return String.valueOf(bch_balance);
+    }
+
 }

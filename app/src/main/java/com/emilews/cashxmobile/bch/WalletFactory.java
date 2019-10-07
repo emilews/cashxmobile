@@ -8,7 +8,7 @@ import com.bitcoin.slpwallet.SLPWallet;
 import java.util.List;
 
 public class WalletFactory {
-    /*
+    /**
         This factory creates an SLPWallet with a BCH address and an SLP address, so we can use them
         as we please.
      */

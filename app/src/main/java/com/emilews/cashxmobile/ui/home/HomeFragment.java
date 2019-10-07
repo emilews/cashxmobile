@@ -17,10 +17,13 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.emilews.cashxmobile.MainActivity;
 import com.emilews.cashxmobile.R;
+import com.google.android.material.snackbar.Snackbar;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
+    private static TextView bch_balance_text;
+    private static View rt;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -34,26 +37,21 @@ public class HomeFragment extends Fragment {
            MainActivity.bchPressedSend();
         });
 
-        TextView balance = root.findViewById(R.id.bchBalanceQuantity);
+        bch_balance_text = root.findViewById(R.id.bchBalanceQuantity);
+        bch_balance_text.setText(MainActivity.getBchBalance());
         Button bchUpdateButton = root.findViewById(R.id.bchUpdateButton);
 
 
         bchUpdateButton.setOnClickListener(e -> {
             MainActivity.UpdateBCH();
-            StringBuilder sb = new StringBuilder();
-            System.out.println(sb.toString());
-            balance.setText(sb.toString());
         });
-
-
-
-        homeViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-
-            }
-        });
+        rt = root;
         return root;
+    }
+    public static void updateBchUI(){
+        if(!MainActivity.getBchBalance().equals(String.valueOf(bch_balance_text.getText()))){
+            bch_balance_text.setText(MainActivity.getBchBalance());
+        }
     }
 
 

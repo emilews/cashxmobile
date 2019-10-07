@@ -49,23 +49,22 @@ public class MainActivity extends AppCompatActivity {
         if(wordlist == null){
             String newMnemonic = MnemonicUtil.getNewMnemonic();
             wallet.createNewWallet(context, newMnemonic);
+            saveWallet();
         }else{
             wallet.createWalletFromMnemonic(context, wordlist);
         }
-        saveWallet();
     }
 
     public void saveWallet(){
         Writer.saveSeedToFile(context, wallet.getWalletMnemonic());
     }
-    public static String getBchAddress(){
-        return wallet.getBchAddress();
-    }
-
     public static void bchPressedSend(){
         Toast.makeText(context, "Pressed send button!", Toast.LENGTH_LONG).show();
     }
     public static void UpdateBCH(){
         wallet.refreshBch();
+    }
+    public static String getBchBalance(){
+        return wallet.getBchBalance();
     }
 }
